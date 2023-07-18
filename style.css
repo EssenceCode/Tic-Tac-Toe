@@ -1,0 +1,11 @@
+.game-container {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    place-content: center;
+    gap: 5px;
+}
+
+.sqr {
+    background-color: grey;
+}
