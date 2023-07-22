@@ -8,15 +8,16 @@
 </head>
 <body>
     <div class="game-container">
-        <div class="turn"></div>
-        <div class="board"></div>
-
-        <div class="game-buttons">
-            <button type="submit">start</button>
-            <button type="reset">reset</button>
+        <div class="game-control">
+            <div class="turn"></div>
+            <div class="board"></div>
         </div>
 
-        <div class="winner"></div>
+        <div class="alert-container display-none">
+            <div class="game-result"></div>
+
+            <button class="reset">reset</button>
+        </div>
     </div>
     
     <script src="./script.js"></script>
