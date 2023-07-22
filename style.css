@@ -18,3 +18,10 @@
     border-right: 1px solid black;
     /* font-size: 200px; */
 }
+
+.display-none {
+    display: none;
+}
+.display-on {
+    display:block;
+}
