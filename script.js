@@ -37,8 +37,9 @@ const gameBoard = (() => {
           (_board[1] === playerOne.getMarker() && _board[4] === playerOne.getMarker() && _board[7] === playerOne.getMarker()) ||
           (_board[2] === playerOne.getMarker() && _board[5] === playerOne.getMarker() && _board[8] === playerOne.getMarker()) ||
           // diagonal
-          (_board[0] === playerOne.getMarker() && _board[4] === playerOne.getMarker() && _board[8] === playerOne.getMarker()) 
-        ) {
+          (_board[0] === playerOne.getMarker() && _board[4] === playerOne.getMarker() && _board[8] === playerOne.getMarker()) ||
+          (_board[2] === playerOne.getMarker() && _board[4] === playerOne.getMarker() && _board[6] === playerOne.getMarker())  
+          ) {
             // console.log(playerOne.getName());
             return 'win';
         }
@@ -53,8 +54,10 @@ const gameBoard = (() => {
           (_board[1] === playerTwo.getMarker() && _board[4] === playerTwo.getMarker() && _board[7] === playerTwo.getMarker()) ||
           (_board[2] === playerTwo.getMarker() && _board[5] === playerTwo.getMarker() && _board[8] === playerTwo.getMarker()) ||
           // diagonal
-          (_board[0] === playerTwo.getMarker() && _board[4] === playerTwo.getMarker() && _board[8] === playerTwo.getMarker()) 
-        ) {
+          (_board[0] === playerTwo.getMarker() && _board[4] === playerTwo.getMarker() && _board[8] === playerTwo.getMarker()) ||
+          (_board[2] === playerTwo.getMarker() && _board[4] === playerTwo.getMarker() && _board[6] === playerTwo.getMarker()) 
+        
+          ) {
             return 'lose';
         }
         else if (_board.every(cell => cell !== '')) {
@@ -100,28 +103,27 @@ const gameController = (() => {
     const getActivePlayer = () => activePlayers;
 
     const playGame = (index) => {
-        // console.log(
-        //     `${getActivePlayer().name} put his marker on cell ${index}`
-        // )
+   
         board.placeMarker(index,getActivePlayer().marker)
-        // board.checkWinner();    
+        const showPlayer = () => {
+
+        }
         switchPlayers(); 
     
 
     }
 
-    return { getActivePlayer, playGame, getPlayer, checkWinner: board.checkWinner}
+    return { getActivePlayer, playGame, getPlayer, getBoard: board.getBoard}
 })();
 
 const displayController = (() => {
     const game = gameController;
-    const gameDiv = document.querySelector('.game-control')
-    const _boardDiv = document.querySelector('.board');
-    const _playerTurn = document.querySelector('.turn');
-    const resultContainer = document.querySelector('.alert-container');
+  
+    const _boardDiv = document.querySelector('.board');  
+    // const sqrAll = document.querySelectorAll('.sqr') 
     const result = document.querySelector('.game-result');
     const resetBtn = document.querySelector('.reset');
-    
+    // const board = gameController.getBoard();
    
     const createGrid = () => {
         for(let i = 0; i < 9; i++) {
@@ -131,8 +133,14 @@ const displayController = (() => {
         
             _boardDiv.appendChild(sqr);
         }    
+    };   
+  
+    const renderBoard = (board) => {    
+        for (let i = 0; i < board.length; i++) {
+            const sqr = document.querySelectorAll('.sqr')
+            sqr[i].textContent = board[i]
+        }
     };
-
     const updateScreen = () => {
         
 
@@ -140,62 +148,66 @@ const displayController = (() => {
          const drawMsg = (name,name2) => result.textContent = `${name} and ${name2} is tied.`
          const winMsg = (name) => result.textContent = `${name} wins`;
          const loseMsg = (name) => result.textContent = `${name} wins`;
-         const toggleMsgAndBtn = () => {
-            resultContainer.classList.add('display-on');
-            gameDiv.style.display = 'none'
-
-         };
+       
 
          const isWin = () => {
             // print the winner of the game;
-            if(game.checkWinner() === 'draw') {
-               toggleMsgAndBtn();
+            if(gameBoard.checkWinner() === 'draw') {
+             
                return drawMsg(game.getPlayer()[0].name,game.getPlayer()[1].name);
              }
-             else if(game.checkWinner() === 'win') {
-                toggleMsgAndBtn();
+             else if(gameBoard.checkWinner() === 'win') {
+               
                 return winMsg(game.getPlayer()[0].name);
                 
              }
-             else if(game.checkWinner() === 'lose') {
-                toggleMsgAndBtn();
+             else if(gameBoard.checkWinner() === 'lose') {
+               
                 return loseMsg(game.getPlayer()[1].name);
 
              }     
 
              
     }
-        isWin()
+        
         
 
-        _playerTurn.textContent = `${activePlayer} turn`;
-
-
-    }
+        isWin()
+        return{isWin}
+    };
 
     const sqrClick = () => {
         const sqr = document.querySelectorAll('.sqr');
         sqr.forEach(cell => cell.addEventListener('click', (e) => {
             const selectedSqr = e.target.getAttribute('index');
             
-            if(e.target.textContent !=='')return;
-            e.target.textContent = `${game.getActivePlayer().marker}`
+            if(updateScreen().isWin()||e.target.textContent !=='')return true;
+            // e.target.textContent = `${game.getActivePlayer().marker}`
             game.playGame(selectedSqr);
+            renderBoard(gameBoard.getBoard())
             updateScreen();
 
         }));
       
+    };
+
+    const newGame = () => {
+        gameBoard.resetBoard();
+        renderBoard(gameBoard.getBoard());
+        result.textContent = '';
+
     }
 
-    const resetBoard = (e) => {
-        resetBtn.addEventListener('click',(e)=>console.log(e.target))
-        
-    }
+   
+
+    resetBtn.addEventListener('click',newGame)
 
     createGrid();
     updateScreen();
     sqrClick();
-    resetBoard();
+    // resetBoard();
+
+    return{renderBoard}
  
 })();
 
