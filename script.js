@@ -12,7 +12,6 @@ const playerTwo = PlayerFactory('Player Two', 'O');
 const gameBoard = (() => {
     let _board= new Array(9).fill('');
     let getBoard = () => [..._board];
-    const win = ''
 
     const placeMarker = (index,marker) => {
          deleteItem = 1;
@@ -99,19 +98,32 @@ const gameController = (() => {
             activePlayers = player[0];
         }
     }
+    
+    const isWin = () => {
+        if(board.checkWinner() === 'draw') {
+           return 'draw';
+         }
+         else if(board.checkWinner() === 'win') {
+            return player[0].name;
+            
+         }
+         else if(board.checkWinner() === 'lose') {
+            return player[1].name;
+         }     
 
-    const getActivePlayer = () => activePlayers;
-
+         
+}
+    
     const playGame = (index) => {
    
-        board.placeMarker(index,getActivePlayer().marker)
-        // console.log(switchPlayers());
+        board.placeMarker(index,activePlayers.marker)
+        isWin();
         switchPlayers(); 
     
 
     }
 
-    return { getActivePlayer, playGame, getPlayer,switchPlayers}
+    return { playGame, getPlayer,switchPlayers,isWin}
 })();
 
 const displayController = (() => {
@@ -140,35 +152,22 @@ const displayController = (() => {
         }
     };
     const updateScreen = () => {
-         const activePlayer = game.getActivePlayer().name;
          const drawMsg = (name,name2) => result.textContent = `${name} and ${name2} is tied.`
          const winMsg = (name) => result.textContent = `${name} wins`;
          const loseMsg = (name) => result.textContent = `${name} wins`;
        
-         const isWin = () => {
-            // print the winner of the game;
-            if(gameBoard.checkWinner() === 'draw') {
-               
-               return drawMsg(game.getPlayer()[0].name,game.getPlayer()[1].name);
-             }
-             else if(gameBoard.checkWinner() === 'win') {
-                
-                return winMsg(game.getPlayer()[0].name);
-                
-             }
-             else if(gameBoard.checkWinner() === 'lose') {
-                
-                return loseMsg(game.getPlayer()[1].name);
+    // print the winner of the game;
+        if(game.isWin() === 'draw') {
+            return drawMsg(game.getPlayer()[0].name,game.getPlayer()[1].name);
+     }
 
-             }     
-
-             
-    }
-        
-        
-
-        isWin()
-        return{isWin}
+         else if(game.isWin() === game.getPlayer()[0].name) {
+             return winMsg(game.getPlayer()[0].name);
+     }
+        else if(game.isWin() === game.getPlayer()[1].name) {
+              return loseMsg(game.getPlayer()[1].name);
+     }
+    
     };
 
     const sqrClick = () => {
@@ -176,8 +175,7 @@ const displayController = (() => {
         sqr.forEach(cell => cell.addEventListener('click', (e) => {
             const selectedSqr = e.target.getAttribute('index');
             
-            if(updateScreen().isWin()||e.target.textContent !=='')return true;
-            // e.target.textContent = `${game.getActivePlayer().marker}`
+            if(game.isWin()||e.target.textContent !=='')return true;
             game.playGame(selectedSqr);
             renderBoard(gameBoard.getBoard())
             updateScreen();
@@ -200,11 +198,11 @@ const displayController = (() => {
     resetBtn.addEventListener('click',newGame)
 
     createGrid();
-    updateScreen();
+    // updateScreen();
     sqrClick();
     // resetBoard();
-
-    return{renderBoard}
+    const get = game.getPlayer()
+    return{renderBoard,get}
  
 })();
 
