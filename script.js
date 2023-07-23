@@ -3,11 +3,10 @@ const PlayerFactory = (name,marker) => {
     getName = () => name;
     getMarker = () => marker;
 
-    return {getName, getMarker};
+    return {getName, getMarker,name};
 }
-
-const playerOne = PlayerFactory('Player One','X');
-const playerTwo = PlayerFactory('Player Two', 'O');
+const playerOne = PlayerFactory('playerOne','X');
+const playerTwo = PlayerFactory('playerTwo','O');
 
 const gameBoard = (() => {
     let _board= new Array(9).fill('');
@@ -119,16 +118,20 @@ const gameController = (() => {
         board.placeMarker(index,activePlayers.marker)
         isWin();
         switchPlayers(); 
-    
-
     }
 
-    return { playGame, getPlayer,switchPlayers,isWin}
+    const resetgame = () => {
+        board.resetBoard()
+        activePlayers = player[0];
+    }
+
+    return { playGame, getPlayer,isWin,resetgame}
 })();
 
 const displayController = (() => {
     const game = gameController;
-  
+    const gameContainer = document.querySelector('.game-container');
+    const announcement = document.querySelector('.announcement')
     const _boardDiv = document.querySelector('.board');  
   
     const result = document.querySelector('.game-result');
@@ -158,13 +161,22 @@ const displayController = (() => {
        
     // print the winner of the game;
         if(game.isWin() === 'draw') {
+            _boardDiv.classList.add('display-none')
+        announcement.classList.remove('display-none');
+
             return drawMsg(game.getPlayer()[0].name,game.getPlayer()[1].name);
      }
 
          else if(game.isWin() === game.getPlayer()[0].name) {
+            _boardDiv.classList.add('display-none')
+        announcement.classList.remove('display-none');
+
              return winMsg(game.getPlayer()[0].name);
      }
         else if(game.isWin() === game.getPlayer()[1].name) {
+            _boardDiv.classList.add('display-none')
+        announcement.classList.remove('display-none');
+
               return loseMsg(game.getPlayer()[1].name);
      }
     
@@ -185,10 +197,16 @@ const displayController = (() => {
     };
 
     const newGame = () => {
-        gameBoard.resetBoard();
+        
+        game.resetgame();
         renderBoard(gameBoard.getBoard());
-        game.switchPlayers();
+       
+        
+        _boardDiv.classList.remove('display-none');
+        announcement.classList.add('display-none');
 
+
+        
         result.textContent = '';
 
     }
@@ -201,8 +219,8 @@ const displayController = (() => {
     // updateScreen();
     sqrClick();
     // resetBoard();
-    const get = game.getPlayer()
-    return{renderBoard,get}
+    
+    return{renderBoard,}
  
 })();
 
