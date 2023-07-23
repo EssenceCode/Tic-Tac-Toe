@@ -105,25 +105,23 @@ const gameController = (() => {
     const playGame = (index) => {
    
         board.placeMarker(index,getActivePlayer().marker)
-        const showPlayer = () => {
-
-        }
+        // console.log(switchPlayers());
         switchPlayers(); 
     
 
     }
 
-    return { getActivePlayer, playGame, getPlayer, getBoard: board.getBoard}
+    return { getActivePlayer, playGame, getPlayer,switchPlayers}
 })();
 
 const displayController = (() => {
     const game = gameController;
   
     const _boardDiv = document.querySelector('.board');  
-    // const sqrAll = document.querySelectorAll('.sqr') 
+  
     const result = document.querySelector('.game-result');
     const resetBtn = document.querySelector('.reset');
-    // const board = gameController.getBoard();
+   
    
     const createGrid = () => {
         for(let i = 0; i < 9; i++) {
@@ -142,27 +140,24 @@ const displayController = (() => {
         }
     };
     const updateScreen = () => {
-        
-
          const activePlayer = game.getActivePlayer().name;
          const drawMsg = (name,name2) => result.textContent = `${name} and ${name2} is tied.`
          const winMsg = (name) => result.textContent = `${name} wins`;
          const loseMsg = (name) => result.textContent = `${name} wins`;
        
-
          const isWin = () => {
             // print the winner of the game;
             if(gameBoard.checkWinner() === 'draw') {
-             
+               
                return drawMsg(game.getPlayer()[0].name,game.getPlayer()[1].name);
              }
              else if(gameBoard.checkWinner() === 'win') {
-               
+                
                 return winMsg(game.getPlayer()[0].name);
                 
              }
              else if(gameBoard.checkWinner() === 'lose') {
-               
+                
                 return loseMsg(game.getPlayer()[1].name);
 
              }     
@@ -194,6 +189,8 @@ const displayController = (() => {
     const newGame = () => {
         gameBoard.resetBoard();
         renderBoard(gameBoard.getBoard());
+        game.switchPlayers();
+
         result.textContent = '';
 
     }
