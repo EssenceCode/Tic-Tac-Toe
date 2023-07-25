@@ -38,7 +38,7 @@ const gameBoard = (() => {
           (_board[0] === playerOne.getMarker() && _board[4] === playerOne.getMarker() && _board[8] === playerOne.getMarker()) ||
           (_board[2] === playerOne.getMarker() && _board[4] === playerOne.getMarker() && _board[6] === playerOne.getMarker())  
           ) {
-            // console.log(playerOne.getName());
+           
             return 'win';
         }
       
@@ -87,11 +87,9 @@ const gameController = (() => {
 
     const compChoice = () => {
         let indexes = board.getBoard().map((val,index) => index);
-        let availableIndex = indexes.filter(index => board.getBoard()[index] === '' )
+        let availableIndex = indexes.filter(index => board.getBoard()[index] === '' );
         const choice = availableIndex[Math.floor(Math.random() * availableIndex.length)];
-        
-        console.log(choice)
-        console.log(availableIndex)
+    
         return choice;
     }
 
@@ -132,12 +130,12 @@ const gameController = (() => {
         
     }
 
-    const resetgame = () => {
-        board.resetBoard()
+    const resetGame = () => {
+        board.resetBoard();
         activePlayers = player[0];
     }
 
-    return { playGame, getPlayer,isWin,resetgame, compChoice,getActivePlayer}
+    return { playGame, getPlayer,isWin,resetGame, compChoice,getActivePlayer}
 })();
 
 const displayController = (() => {
@@ -172,50 +170,35 @@ const displayController = (() => {
          const loseMsg = (name) => result.textContent = `${name} wins`;
        
     // print the winner of the game;
-        if(game.isWin() === 'draw') {
-            // _boardDiv.classList.add('display-none')
-        announcement.classList.remove('display-none');
-
+        if(game.isWin() === 'draw') {   
             return drawMsg(game.getPlayer()[0].name,game.getPlayer()[1].name);
      }
-
          else if(game.isWin() === game.getPlayer()[0].name) {
-            // _boardDiv.classList.add('display-none')
-        announcement.classList.remove('display-none');
-
              return winMsg(game.getPlayer()[0].name);
      }
-        else if(game.isWin() === game.getPlayer()[1].name) {
-            // _boardDiv.classList.add('display-none')
-        announcement.classList.remove('display-none');
-
-              return loseMsg(game.getPlayer()[1].name);
+         else if(game.isWin() === game.getPlayer()[1].name) {
+             return loseMsg(game.getPlayer()[1].name);
      }
-    
     };
     
 
     const sqrClick = () => {
-        
         const sqr = document.querySelectorAll('.sqr');
         sqr.forEach(cell => cell.addEventListener('click', (e) => {
             const selectedSqr = e.target.getAttribute('index');
-            
             if(game.isWin()||e.target.textContent !=='')return;
             if(game.getActivePlayer().name === game.getPlayer()[0].name) {
                 game.playGame(selectedSqr);
                 renderBoard(gameBoard.getBoard())
-                updateScreen();    
-               
-            }
-            
+                updateScreen();  
+            };
            setTimeout(() => {
             if(game.getActivePlayer().name === game.getPlayer()[1].name) {
                 game.playGame(game.compChoice())
                 renderBoard(gameBoard.getBoard())
                 updateScreen();
             }
-          },10)
+          },10);
             
           
 
@@ -224,31 +207,16 @@ const displayController = (() => {
     };
 
     const newGame = () => {
-        
-        game.resetgame();
+        game.resetGame();
         renderBoard(gameBoard.getBoard());
-       
-        
-        _boardDiv.classList.remove('display-none');
-        announcement.classList.add('display-none');
-
-
-        
         result.textContent = '';
-
     }
 
  
     resetBtn.addEventListener('click',newGame)
 
     createGrid();
-  
     sqrClick();
- 
-    
-   
- 
 })();
 
-// displayController.renderBoard(gameBoard.getBoard());
 
