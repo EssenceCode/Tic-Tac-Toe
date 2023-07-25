@@ -193,12 +193,13 @@ const displayController = (() => {
                 updateScreen();  
             };
            setTimeout(() => {
+            if(game.isWin())return;
             if(game.getActivePlayer().name === game.getPlayer()[1].name) {
                 game.playGame(game.compChoice())
                 renderBoard(gameBoard.getBoard())
                 updateScreen();
             }
-          },10);
+          },1000);
             
           
 
