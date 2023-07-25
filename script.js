@@ -86,8 +86,12 @@ const gameController = (() => {
     ]
 
     const compChoice = () => {
-        const choice = Math.floor(Math.random() * board.getBoard().length);
+        let indexes = board.getBoard().map((val,index) => index);
+        let availableIndex = indexes.filter(index => board.getBoard()[index] === '' )
+        const choice = availableIndex[Math.floor(Math.random() * availableIndex.length)];
+        
         console.log(choice)
+        console.log(availableIndex)
         return choice;
     }
 
