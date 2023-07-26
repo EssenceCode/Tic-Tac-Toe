@@ -130,18 +130,26 @@ const gameController = (() => {
         
     }
 
+    const compPlay = () => {
+        if(isWin())return;
+        board.placeMarker(compChoice(),activePlayers.marker)
+        console.log(activePlayers.marker)
+        isWin();
+        switchPlayers();
+       
+
+    }
+
     const resetGame = () => {
         board.resetBoard();
         activePlayers = player[0];
     }
 
-    return { playGame, getPlayer,isWin,resetGame, compChoice,getActivePlayer}
+    return { playGame, getPlayer,isWin,resetGame, getActivePlayer, compChoice, compPlay}
 })();
 
 const displayController = (() => {
     const game = gameController;
-    const gameContainer = document.querySelector('.game-container');
-    const announcement = document.querySelector('.announcement')
     const _boardDiv = document.querySelector('.board');  
   
     const result = document.querySelector('.game-result');
@@ -193,12 +201,9 @@ const displayController = (() => {
                 updateScreen();  
             };
            setTimeout(() => {
-            if(game.isWin())return;
-            if(game.getActivePlayer().name === game.getPlayer()[1].name) {
-                game.playGame(game.compChoice())
-                renderBoard(gameBoard.getBoard())
-                updateScreen();
-            }
+            game.compPlay();
+            renderBoard(gameBoard.getBoard())
+            updateScreen(); 
           },1000);
             
           
